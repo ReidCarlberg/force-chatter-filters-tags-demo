@@ -1,0 +1,55 @@
+<apex:page controller="ChatterFilterController">
+
+<apex:stylesheet value="{!URLFOR('/sCSS/18.0/sprites/1267466318000/Theme3/default/chatter.css')}"/>
+<style type="text/css">
+	.myFilters {
+		float: left;
+		width: 100px; 
+	}
+	.myUserFeedResults {
+		margin-left: 110px;
+	}
+	.myClear {
+		float: none;
+	}
+	.conditions {
+		color: #ccc;
+	}
+</style>
+
+		<apex:outputPanel layout="block" id="filters" styleClass="myFilters">
+		<div class="feedcontainer">
+	
+		<div class="cxfeedcontainer feed">
+		<div class="cxfeeditem feeditem">
+			<p><apex:outputLink value="{!URLFOR($Page.Chatter_By_Keyword)}">Keywords</apex:outputLink> | Filters</p>
+			<apex:form ><p> 
+			<apex:commandLink value="All" action="{!doRefresh}" rerender="userFeedResults,filters" rendered="{!myFilter != null}">
+	              <apex:param name="singleFilter" value="{!null}" assignTo="{!myFilter}"/>
+	         </apex:commandLink><apex:outputText value="All" rendered="{!myFilter == null}" /><br/>			
+	         <apex:repeat value="{!myFilters}" var="currentFilter">
+	        	<apex:commandLink value="{!currentFilter.Name}" action="{!doRefresh}" rerender="userFeedResults,filters" rendered="{!myFilter != currentFilter.Id}">
+	            	  <apex:param name="singleFilter" value="{!currentFilter.Id}" assignTo="{!myFilter}" />
+	         	</apex:commandLink>
+	         	<apex:outputPanel rendered="{!myFilter == currentFilter.Id}" >
+	         		<apex:outputText value="{!currentFilter.Name}" /><br/>
+	         		<apex:repeat value="{!currentFilter.Chatter_Filter_Conditions__r}" var="currentCondition">
+	         			<apex:outputPanel styleClass="conditions"><apex:outputText value="{!currentCondition.Type__c}" />&nbsp;
+	         			'<apex:outputText value="{!currentCondition.Keyword__c}" />'</apex:outputPanel><br/>
+	         		</apex:repeat>
+	         	</apex:outputPanel>
+	         <br/>
+			</apex:repeat>
+
+	         </p>
+			</apex:form>
+		</div></div></div>
+	</apex:outputPanel>
+	
+	<apex:outputPanel layout="block" id="userFeedResults" styleClass="myUserFeedResults">
+	
+	<c:Chatter_Filtered_Data_Table userFeeds="{!userFeeds}" />
+
+	</apex:outputPanel>
+
+</apex:page>

@@ -1,0 +1,44 @@
+<apex:component >
+
+	<apex:attribute name="userFeeds" type="UserFeed[]" required="true" description="A collection of user feeds this component should render." />
+	
+	<div class="feedcontainer">
+	
+		<div class="cxfeedcontainer feed">
+	
+			<apex:repeat value="{!userFeeds}" var="currentPost" id="postList" >
+	
+				<div class="cxfeeditem feeditem">
+		
+					<apex:outputLink value="/{!currentPost.ParentId}" ><apex:image value="/userphoto?u={!currentPost.ParentId}&v=1&s=T" height="32" width="32" styleClass="feeditemusericon"/></apex:outputLink>
+
+					<div class="feeditemcontent cxfeeditemcontent">
+	
+						<div>
+	
+							<apex:outputLink value="/{!currentPost.ParentId}" >
+								<apex:outputText value="{!currentPost.CreatedBy.FirstName}" />&nbsp;
+								<apex:outputText value="{!currentPost.CreatedBy.LastName}" />
+							</apex:outputLink>
+	
+							<span class="feeditemtext">	
+								<apex:outputText value="{!currentPost.FeedPost.Body}" />
+							</span>
+	
+						</div>
+
+						<div class="feeditemfooter">
+							<apex:outputField value="{!currentPost.FeedPost.CreatedDate}" styleClass="feeditemtimestamp" />
+						</div>
+	
+					</div>
+					
+				</div>
+		
+			</apex:repeat>
+		
+		</div>
+	
+	</div>
+		
+</apex:component>

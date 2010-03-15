@@ -1,0 +1,37 @@
+<apex:page >
+
+<h2>Intro</h2>
+
+<p>My frustration with Facebook is all about getting to the info I want, regardless of whether or not I'm following someone.</p>
+
+<p>This demo app solves that by showing Chatter posts which match preconfigured keywords, more complex filters or common tags such as "#" and "@".<p>
+
+<p>Keywords are single words of interest that combined with an OR.  The app queries using a 'LIKE' operation in the SOQL.</p>
+
+<p>Filters have Filter Conditions.  A single filter might want posts with alpha and beta but not gamma.  Filter Conditions are combined with an AND and use either LIKE or NOT [field] LIKE.  Filters are combined with an OR.</p>
+
+<h2>IMPORTANT</h2>
+
+<p>You must configure keywords and filters before you will see results.</p>
+
+<p>Tags are dynamic.</p>
+
+<p>There is a custom settings object you can configure to your liking.
+
+<h2>Questions?</h2>
+
+<p>Questions / Comments? email <a href="mailto:reid.carlberg@salesforce.com">Reid.Carlberg@salesforce.com</a></p>
+
+<h2>Notes</h2>
+
+<p>Why isn't this just a report?  Well, two reasons. First, I haven't seen any obvious reports on user feeds yet.  Second, this function combines multiple filters where each report would contain essentially a single filter.</p>
+
+<p>Both Keyword and Filters are user specific.  You have to set up the particular filters you want per user.</p>
+
+<p>Nothing will show up in the results page until you configure keywords or filters and have matching results.</p>
+
+<p>Doesn't query comments.</p>
+
+<p>Limits results to the first 100.</p>
+
+</apex:page>
