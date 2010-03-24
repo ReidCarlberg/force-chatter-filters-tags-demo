@@ -16,11 +16,17 @@ public with sharing class TestUtility {
 	}
 	
 	public static User createTestUser(Profile p) {
-		List<User> users = [Select ID, Username FROM User];
+		
+		String namePrefix = createRandomWord();
+		
+		AggregateResult[] userCount = [Select count(id) userCount From user where username like :namePrefix];
+		
+		Object users = userCount[0].get('userCount');
 		
 		User testUser = new User();
 		testUser.Email = 'test@test.com';
-		testUser.Username = 'test1'+users.size()+'@testuse.com';
+		testUser.Username = namePrefix+users+'@testuser.com';
+
 		testUser.LastName = 'test';
 		testUser.Alias = 'test';
 		testUser.ProfileId = p.Id;

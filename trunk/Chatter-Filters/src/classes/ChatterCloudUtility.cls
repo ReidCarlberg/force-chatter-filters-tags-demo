@@ -2,11 +2,7 @@ public with sharing class ChatterCloudUtility {
 
 	ChatterCloudSettings__c settings = ChatterCloudSettings__c.getInstance();
 	
-	static final Integer FILTER_MINIMUM_LENGTH = 4;
-	static final Integer FILTER_MINIMUM_SCORE = 5;
-	
-	static final Set<String> FILTER_INCLUDED = new Set<String> { 'sale' };
-	static final Set<String> FILTER_EXCLUDED = new Set<String> { 'shit' };
+
 
 
 	public Set<String> buildSignificant() {
@@ -24,8 +20,8 @@ public with sharing class ChatterCloudUtility {
 		}
 		Set<String> ret = new Set<String>();
 		
-		List<UserFeed> userFeeds = [SELECT Id, Type, CreatedBy.FirstName, CreatedBy.LastName, ParentId, Parent.Name, 
-			FeedPost.Id, FeedPost.Type, FeedPost.Body, FeedPost.Title From UserFeed Order By CreatedDate DESC LIMIT 100];
+        List<UserFeed> userFeeds = [SELECT Id, Type, CreatedBy.FirstName, CreatedBy.LastName, ParentId, Parent.Name, 
+            FeedPost.Id, FeedPost.Type, FeedPost.Body, FeedPost.Title From UserFeed Where FeedPost.Body Like '%#%' or FeedPost.Body Like '%@%' Order By CreatedDate DESC LIMIT 200];
 			
 		for (UserFeed current : userFeeds) {
 			ret.addAll(this.buildSignificant(current.FeedPost.Body));
@@ -83,23 +79,7 @@ public with sharing class ChatterCloudUtility {
 			}
 		}
 		
-		/*
-		if (settings.Include_Significant_Words__c) {
-			if(FILTER_EXCLUDED.contains(word)) { 
-				// auto exclusion
-				ret = 0;
-			} else if (Integer.valueOf(word) > 0) {
-				// it's a number, not interesting
-				ret = 0;
-			} else {
-				// the hard part
-				//length
-				if(word.length() >= settings.Minimum_Word_Length__c) { ret+=3; }
-				//action
-				if(word.endsWith('ing')) { ret += 3; }
-			}
-		}
-		*/
+
 		return  ret;
 	}
 	
