@@ -4,15 +4,20 @@
 <style type="text/css">
 	.myKeywords {
 		float: left;
-		width: 125px;
+		width: 170px;
 	}
 	.myUserFeedResults {
-		margin-left: 135px;
+		margin-left: 180px;
 	}
 	.myClear {
 		float: none;
 	}
 </style>
+<h1>Chatter Tags</h1>
+
+<p>Chatter Tags helps you explore posts whether you subscribe to the author or not.  
+
+This app builds a list of # and @ tags automatically and lets you configure keywords and filters for your topics.</p>
 
 	<apex:outputPanel layout="block" id="keywords" styleClass="myKeywords">
 		<div class="feedcontainer">
@@ -22,25 +27,40 @@
 			<apex:form >
 			<p>
 Keywords |&nbsp;<apex:outputLink value="{!URLFOR($Page.Filtered_Chatter)}">Filters</apex:outputLink></p>
-			<p>
-				<apex:commandLink value="Saved" action="{!doKeywordRefresh}" rerender="userFeedResults,keywords"rendered="{!keywordType == 'cloud'}" >
-					<apex:param name="type" value="my" assignTo="{!keywordType}" />
+			<p>					
+			
+				<apex:commandLink value="Tags" action="{!doKeywordRefresh}" rerender="userFeedResults,keywords" rendered="{!keywordType != 'tag'}" >
+					<apex:param name="type" value="tag" assignTo="{!keywordType}" />
 				</apex:commandLink>
-				<apex:outputText value="Saved" rendered="{!keywordType != 'cloud'}" />
-								&nbsp;|&nbsp; 
-				<apex:commandLink value="#/@ Tags" action="{!doKeywordRefresh}" rerender="userFeedResults,keywords" rendered="{!keywordType != 'cloud'}" >
-					<apex:param name="type" value="cloud" assignTo="{!keywordType}" />
-				</apex:commandLink>
-				<apex:outputText value="#/@ Tags" rendered="{!keywordType == 'cloud'}" />
+				<apex:outputText value="Tags" rendered="{!keywordType == 'tag'}" />
+				
+				&nbsp;|&nbsp; 
 
+				<apex:commandLink value="People" action="{!doKeywordRefresh}" rerender="userFeedResults,keywords" rendered="{!keywordType != 'address'}" >
+					<apex:param name="type" value="address" assignTo="{!keywordType}" />
+					<apex:param name="single" value="" assignTo="{!singleKeyword}" />
+				</apex:commandLink>
+				<apex:outputText value="People" rendered="{!keywordType == 'address'}" />
+
+				&nbsp;|&nbsp;  
+				
+				<apex:commandLink value="Keywords" action="{!doKeywordRefresh}" rerender="userFeedResults,keywords" rendered="{!(keywordType == 'tag' || keywordType == 'address')}" >
+					<apex:param name="type" value="" assignTo="{!keywordType}" />
+				</apex:commandLink>
+				<apex:outputText value="Keywords" rendered="{!(keywordType != 'tag' && keywordType != 'address')}" />
+								
 				</p>
+
 			<apex:commandLink value="All" action="{!doRefresh}" rerender="userFeedResults,keywords" rendered="{!singleKeyword != null}">
 	              <apex:param name="singleKeyword" value="" assignTo="{!singleKeyword}"/>
 	         </apex:commandLink><apex:outputText value="All" rendered="{!singleKeyword == null}" /><br/>			
+
 	         <apex:repeat value="{!simpleKeywords}" var="currentKeyword">
-	        <apex:commandLink value="{!currentKeyword}" action="{!doRefresh}" rerender="userFeedResults,keywords" rendered="{!singleKeyword != currentKeyword}">
+	         <apex:commandLink value="{!currentKeyword}" action="{!doRefresh}" rerender="userFeedResults,keywords" rendered="{!singleKeyword != currentKeyword}">
 	              <apex:param name="singleKeyword" value="{!currentKeyword}" assignTo="{!singleKeyword}"/>
-	         </apex:commandLink><apex:outputText value="{!currentKeyword}" rendered="{!singleKeyword == currentKeyword}" /><br/>
+	         </apex:commandLink>
+	        <apex:outputText value="{!currentKeyword}" rendered="{!singleKeyword == currentKeyword}" /><br/>
+
 			</apex:repeat>
 
 	         </p>

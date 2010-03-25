@@ -1,24 +1,25 @@
 public with sharing class ChatterByKeywordController {
 
-	public String keywordType { get; set; }
+	public String keywordType { 
+		get {
+			if (keywordType == null) {
+				keywordType = 'tag';
+			} 
+			return keywordType;
+		}
+		set; 
+	}
 	
 	public String singleKeyword { get; set; }
-	
-	private Boolean isCloud() {
-		return keywordType != null && keywordType.toLowerCase() == 'cloud';
-	}
 
 	public List<String> simpleKeywords { 
 			get {
-				if (simpleKeywords == null) {
-					if (isCloud()) {
-						Set<String> words = new ChatterCloudUtility().buildSignificant();
-						simpleKeywords = new List<String>();
-						simpleKeywords.addAll(words);
-					} else {
-						simpleKeywords = new ChatterKeywordQuery().getMyKeywordStrings();
-					}
+				if (simpleKeywords == null) { 
+					simpleKeywords = new List<String>();
+					simpleKeywords.addAll( new ChatterCloudUtility().buildKeywords(keywordType) );
+					simpleKeywords.sort();
 				}
+				//simpleKeywords.sort();
 				return simpleKeywords;
 			}
 			
@@ -30,8 +31,10 @@ public with sharing class ChatterByKeywordController {
 			if (userFeeds == null) {
 				if (this.singleKeyword != null && this.singleKeyword.trim().length() > 0) {
 					userFeeds = new ChatterKeywordQuery().getPosts(this.singleKeyword);
-				} else if (isCloud()) {
-					userFeeds = new ChatterKeywordQuery().getPosts(simpleKeywords);
+				} else if (this.keywordType != null && this.keywordType.length() > 0) {
+					Set<String> temp = new Set<String>();
+					temp.addAll(simpleKeywords);
+					userFeeds = new ChatterKeywordQuery().getPosts(temp);
 				} else {
 					userFeeds = new ChatterKeywordQuery().getPosts();	
 				}				
@@ -49,6 +52,7 @@ public with sharing class ChatterByKeywordController {
 	
 	public PageReference doKeywordRefresh() {
 		simpleKeywords = null;
+		userFeeds = null;
 		return null;
 	}
 }

@@ -17,6 +17,12 @@
 	}
 </style>
 
+<h1>Chatter Tags</h1>
+
+<p>Chatter Tags helps you explore posts whether you subscribe to the author or not.  
+
+This app builds a list of # and @ tags automatically and lets you configure keywords and filters for your topics.</p>
+
 		<apex:outputPanel layout="block" id="filters" styleClass="myFilters">
 		<div class="feedcontainer">
 	
