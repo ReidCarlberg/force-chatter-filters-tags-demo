@@ -17,18 +17,18 @@ public with sharing class ChatterKeywordQuery {
             return myKeywords;
     }
     
-    public List<String> getMyKeywordStrings() {
+    public Set<String> getMyKeywordStrings() { 
 
 		return this.getSimpleKeywords(this.getMyKeywords());
 		        
     }
     
     /*
-    converts a list of keyword to a list of strings
+    converts a list of keyword to a set of strings
     */
-    public List<String> getSimpleKeywords(List<Chatter_Keywords__c> keywords) {
+    public Set<String> getSimpleKeywords(List<Chatter_Keywords__c> keywords) {
     
-    	List<String> simpleKeywords = new List<String>();
+    	Set<String> simpleKeywords = new Set<String>();
     	
     	for (Chatter_Keywords__c currentKeyword : keywords) {
     		simpleKeywords.add(currentKeyword.Name);
@@ -43,7 +43,7 @@ public with sharing class ChatterKeywordQuery {
     */
     public List<UserFeed> getPosts() {
     	List<Chatter_Keywords__c> myKeywords = this.getMyKeywords();
-    	List<String> simpleKeywords = this.getSimpleKeywords(myKeywords);
+    	Set<String> simpleKeywords = this.getSimpleKeywords(myKeywords);
     	return this.getPosts(simpleKeywords);
     }
     
@@ -51,15 +51,15 @@ public with sharing class ChatterKeywordQuery {
     returns a list of users feeds matching a single keyword -- this keyword does not have to be stored
     */
     public List<UserFeed> getPosts(String singleKeyword) {
-    	List<String> simpleKeywords = new List<String>();
+    	Set<String> simpleKeywords = new Set<String>();
     	simpleKeywords.add(singleKeyword);
     	return this.getPosts(simpleKeywords);
-    }
+    } 
     
     /*
     returns a list of user feed posts matching any of the simple keywords -- these keywords do not have to be stored 
     */
-    public List<UserFeed> getPosts(List<String> simpleKeywords) {     
+    public List<UserFeed> getPosts(set<String> simpleKeywords) {     
 		if (simpleKeywords.size() == 0) {
 			return new List<UserFeed>();
 		}
@@ -86,17 +86,6 @@ public with sharing class ChatterKeywordQuery {
         
     }
     
-    /*
-    Test methods and utilities
-    */
-    
-    static void addSingleKeyword(String kw) {
-
-        Chatter_Keywords__c kw1 = new Chatter_Keywords__c();
-        kw1.Name = kw;
-        insert kw1;
-    	
-    }
     
     /*
     Creates a set of keywords for a test user and returns them.
@@ -105,7 +94,7 @@ public with sharing class ChatterKeywordQuery {
        	User testUser = TestUtility.createTestUser();
 		
 		System.runAs(testUser) {
-	        ChatterKeywordQuery.addSingleKeyword('one');
+	        TestUtility.addSingleKeyword('one');
 	        ChatterKeywordQuery query = new ChatterKeywordQuery();
 	        List<Chatter_Keywords__c> kwList = query.getMyKeywords();        
 	        System.assert(kwList.size() == 1);
@@ -119,9 +108,9 @@ public with sharing class ChatterKeywordQuery {
        	User testUser = TestUtility.createTestUser();
 		
 		System.runAs(testUser) {
-	        ChatterKeywordQuery.addSingleKeyword('one');
+	        TestUtility.addSingleKeyword('one');
 	        ChatterKeywordQuery query = new ChatterKeywordQuery();
-	        List<String> strings = query.getSimpleKeywords(query.getMyKeywords());     
+	        Set<String> strings = query.getSimpleKeywords(query.getMyKeywords());     
 	        System.assert(strings.size() == 1);
 		}   
     }
@@ -150,7 +139,7 @@ public with sharing class ChatterKeywordQuery {
 			
 	    	String word1 = TestUtility.createRandomWord();
 	    	
-	        ChatterKeywordQuery.addSingleKeyword(word1);
+	        TestUtility.addSingleKeyword(word1);
 			TestUtility.createFeedPost(UserInfo.getUserId(), 'this is a title', 'here is post ' + word1 + ' of many');
 			ChatterKeywordQuery query = new ChatterKeywordQuery();
 			List<UserFeed> ret = query.getPosts();
@@ -191,7 +180,7 @@ public with sharing class ChatterKeywordQuery {
 	    	String word3 = TestUtility.createRandomWord();
 	    	String word4 = TestUtility.createRandomWord();
 	    	
-	        ChatterKeywordQuery.addSingleKeyword(word1);
+	        TestUtility.addSingleKeyword(word1);
 	
 			TestUtility.createFeedPost(UserInfo.getUserId(), 'this is a title', 'here is ' + word4 +'  ' + word1 + ' of many');
 			TestUtility.createFeedPost(UserInfo.getUserId(), 'this is a title', 'here is ' + word4 +' ' + word2 + ' of many');
@@ -203,17 +192,17 @@ public with sharing class ChatterKeywordQuery {
 			List<UserFeed> ret = query.getPosts();
 	        System.assert(ret.size() == 1);
 	        
-	        ChatterKeywordQuery.addSingleKeyword(word2);
+	        TestUtility.addSingleKeyword(word2);
 	
 			ret = query.getPosts();
 	        System.assert(ret.size() == 2);
 	        
-	        ChatterKeywordQuery.addSingleKeyword(word3);
+	        TestUtility.addSingleKeyword(word3);
 	
 			ret = query.getPosts();
 	        System.assert(ret.size() == 3);
 	        
-	        ChatterKeywordQuery.addSingleKeyword(word4);
+	        TestUtility.addSingleKeyword(word4);
 	
 			ret = query.getPosts();
 	        System.assert(ret.size() == 3);
@@ -231,7 +220,7 @@ public with sharing class ChatterKeywordQuery {
 	    	String word1 = TestUtility.createRandomWord();
 	
 	    	
-	        ChatterKeywordQuery.addSingleKeyword(word1);
+	        TestUtility.addSingleKeyword(word1);
 	
 			TestUtility.createFeedPost(UserInfo.getUserId(), 'this is a title', 'here is post ' + word1 + ' of many');
 	

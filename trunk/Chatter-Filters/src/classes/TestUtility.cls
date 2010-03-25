@@ -87,4 +87,16 @@ public with sharing class TestUtility {
 		
 		System.assert(p.id != null);
 	}
+	
+	/* 
+    Test methods and utilities
+    */
+    
+    
+    public static void addSingleKeyword(String kw) {
+        Chatter_Keywords__c kw1 = new Chatter_Keywords__c();
+        kw1.Name = kw;
+        insert kw1;
+    }
+	
 }

@@ -3,6 +3,18 @@
 */
 public with sharing class ChatterFilterQuery {
 
+	public List<UserFeed> getFilteredPosts(String myFilter) { 
+		
+		List<UserFeed> userFeeds = null;
+		
+		
+		if (myFilter == null || myFilter.trim().length() == 0) {
+			userFeeds = getPosts();
+		} else {
+			userFeeds = getPosts(myFilter);
+		}
+		return userFeeds;
+	}
 	public List<Chatter_Filter__c> getFilters() {
 	
 		Id userId = UserInfo.getUserId();
@@ -52,7 +64,7 @@ public with sharing class ChatterFilterQuery {
 	public List<UserFeed> getPosts(List<Chatter_Filter__c> myFilters) {
 		
 		
-		if (myFilters.size() == 0) {
+		if (myFilters == null || myFilters.size() == 0) {
 			return new List<UserFeed>();
 		}
 		
@@ -166,8 +178,46 @@ public with sharing class ChatterFilterQuery {
 			
 			Chatter_Filter__c currentFilter = filters.get(0); 
 			System.assert(currentFilter.id == filter.id);
+			
+			
 		}
 	}
+
+	static TestMethod void testFilteredPosts() {
+		User testUser = TestUtility.createTestUser();
+		
+		System.runAs(testUser) {
+		
+			Chatter_Filter__c filter = ChatterFilterQuery.createFilter('filter1');
+			String word1 = TestUtility.createRandomWord();
+			String word2 = TestUtility.createRandomWord();
+			ChatterFilterQuery.createCondition(filter, TRUE, word1);
+			ChatterFilterQuery.createCondition(filter, TRUE, word2);
+
+			Chatter_Filter__c filter2 = ChatterFilterQuery.createFilter('filter2');
+			String word3 = TestUtility.createRandomWord();
+			String word4 = TestUtility.createRandomWord();
+			ChatterFilterQuery.createCondition(filter2, TRUE, word3);
+			ChatterFilterQuery.createCondition(filter2, TRUE, word4);
+			
+			TestUtility.createFeedPost(testUser.Id, 'title', 'this has both words ' + word1 + ' and ' + word2 + ' in it');
+			TestUtility.createFeedPost(testUser.Id, 'title', 'this has both words ' + word3 + ' and ' + word4 + ' in it');
+			
+			ChatterFilterQuery query = new ChatterFilterQuery();
+			
+			List<UserFeed> posts = query.getFilteredPosts(null);
+
+			System.assert(posts != null);
+			System.assert(posts.size() == 2);
+			
+			List<UserFeed> posts2 = query.getFilteredPosts(''+filter.id);
+
+			System.assert(posts2 != null);
+			System.assert(posts2.size() == 1);
+			
+		}
+	}
+
 	
 	static TestMethod void testGetPostsSingleFilter() {
 		User testUser = TestUtility.createTestUser();
@@ -188,6 +238,13 @@ public with sharing class ChatterFilterQuery {
 
 			System.assert(posts != null);
 			System.assert(posts.size() == 1);
+			
+			//test for bad id
+			List<UserFeed> posts2 = query.getPosts('BadId'+filter.id);
+
+			System.assert(posts2 != null);
+			System.assert(posts2.size() == 1);
+			
 		}
 	}
 	
@@ -211,6 +268,12 @@ public with sharing class ChatterFilterQuery {
 						
 			ChatterFilterQuery query = new ChatterFilterQuery();
 			
+			//first be sure we get empty when we should
+			List<Chatter_Filter__c> emptyList = new List<Chatter_Filter__c>();
+			List<UserFeed> emptyResult = query.getPosts(emptyList);
+			System.assert(emptyResult.size() == 0);
+			
+			//ok on to the rest
 			List<UserFeed> result = query.getPosts();
 			
 			System.assert(result.size() == 1);
@@ -242,6 +305,7 @@ public with sharing class ChatterFilterQuery {
 		
 		System.runAs(testUser) {
 		
+			
 			String word1 = TestUtility.createRandomWord();
 			String word2 = TestUtility.createRandomWord();
 			String word3 = TestUtility.createRandomWord();

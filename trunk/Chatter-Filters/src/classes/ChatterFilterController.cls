@@ -15,11 +15,7 @@ public String myFilter {get; set;}
 	public List<UserFeed> userFeeds {
 		get {
 			if (userFeeds == null) {
-				if (myFilter == null || myFilter.trim().length() == 0) {
-					userFeeds = new ChatterFilterQuery().getPosts();
-				} else {
-					userFeeds = new ChatterFilterQuery().getPosts(myFilter);
-				}
+				userFeeds = new ChatterFilterQuery().getFilteredPosts(myFilter); 
 			}
 			return userFeeds;
 		}
