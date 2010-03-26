@@ -17,6 +17,13 @@
         <name>ApexTrigger</name>
     </types>
     <types>
+        <members>ChatterCloudSettings__c</members>
+        <members>Chatter_Filter_Condition__c</members>
+        <members>Chatter_Filter__c</members>
+        <members>Chatter_Keywords__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
         <members>*</members>
         <name>StaticResource</name>
     </types>
