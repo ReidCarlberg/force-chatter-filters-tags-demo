@@ -1,0 +1,1 @@
+This demo app illustrates how to work with the Chatter API.
